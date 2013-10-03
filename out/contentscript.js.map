@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "contentscript.js",
+  "sourceRoot": "../res/coffee/",
+  "sources": [
+    "contentscript.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA"
+}
