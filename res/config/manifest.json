@@ -9,7 +9,8 @@
         }
     },
     "permissions":[
-        "http://services.runescape.com/*"
+        "http://services.runescape.com/*",
+        "http://services.runescape.com/m=itemdb_rs/4255_obj_sprite.gif?id=*"
     ],
     "icons" : {
         }
