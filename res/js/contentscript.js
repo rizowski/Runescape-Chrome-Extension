@@ -3,15 +3,29 @@
       cache: true,
       headers: {
         dataType : "json"
-    }
+      }
     });
-var extension, query;
+var extension, query, designer, iManager, cache, spinOpts;
+
+// NEEDS to set graph
+// Needs to change when everything queries
+// Setup better chache process
+
+
 
 window.RsExtension = {};
 extension = window.RsExtension;
-
 extension.QueryTool = {};
+extension.Designer = {};
+extension.ItemManager = {};
+extension.CacheManager = {};
+extension.Toolz = {};
+
 query = extension.QueryTool;
+designer = extension.Designer;
+iManager = extension.ItemManager;
+cache = extension.CacheManager;
+toolz = extension.Toolz;
 
 query.item_url = "http://services.runescape.com/m=itemdb_rs/api/catalogue/detail.json?item=";
 query.category_url = "http://services.runescape.com/m=itemdb_rs/api/catalogue/category.json?category=";
@@ -37,48 +51,78 @@ query.item = function(_itemId, successClbk){
       success: function(data){
         var response = JSON.parse(data);
         var item = response.item;
-        query.getImg(item.icon, function(blob, request_url){
+        query.getIcon(item, function(blob, item){
           item.icon = blob;
           successClbk(item);
         });
       }
     });
 }
-query.getImg = function(_url, callback){
+query.getIcon = function(_item, callback){
   var xhr = new XMLHttpRequest();
   xhr.responseType = 'blob';
   xhr.onload = function() {
-    console.log(_url);
-    callback(window.webkitURL.createObjectURL(xhr.response), _url);
+
+    callback(window.webkitURL.createObjectURL(xhr.response), _item);
   }
-  xhr.open('GET', _url, true);
+  xhr.open('GET', _item.icon, true);
   xhr.send();
 }
-
-// query.category = function(_categoryId, _callback){
-//   var full_url = this.category_url + _categoryId;
-//     return $.ajax({
-//       url: full_url,
-//       type: 'GET',
-//       statusCode:{
-//         401 : function(){
-//           console.log('Auth Error');
-//         },
-//         404 : function(){
-//           console.log('Page not found');
-//         },
-//         500 : function(){
-//           console.log('Server error');
-//         }
-//       },
-//       success: function(data){
-//         callback(data);
-//       }
-//     });
-// }
-
+query.getLargeIcon = function(_item, callback){
+  var xhr = new XMLHttpRequest();
+  xhr.responseType = 'blob';
+  xhr.onload = function() {
+    callback(window.webkitURL.createObjectURL(xhr.response), _item);
+  }
+  xhr.open('GET', _item.icon_large, true);
+  xhr.send();
+}
 query.categoryPrice = function(_categoryId, _search, _callback){
   var full_url = this.category_price_url + _categoryId +"&alpha=" + _search;
+  return $.ajax({
+    url: full_url,
+    type: 'GET',
+    statusCode:{
+      401 : function(){
+        console.log('Auth Error');
+      },
+      404 : function(){
+        console.log('Page not found');
+      },
+      500 : function(){
+        console.log('Server error');
+      }
+    },
+    cache: true,
+    beforeSend:function(){
+      $('#table-loading').show();
+    },
+    success: function(data){
+      var response = JSON.parse(data);
+      items = response.items;
+      for (var i = 0; i < items.length; i++) {
+        items[i].current.formated_price = items[i].current.price;
+        items[i].current.price = toolz.parsePrice(items[i].current.price);
+        query.getIcon(items[i], function(blob, item){
+          item.icon = blob; 
+          query.getLargeIcon(item, function(largeblob, item){
+            item.icon_large = largeblob;
+            iManager.addItem(item);
+            designer.addToTable(item);
+            query.itemGraph(item.id, function(item){
+              console.log(item);
+            });
+          });
+        });
+      };
+    },
+    complete: function(){
+      $('#table-loading').hide();
+    }
+  });
+}
+query.itemGraph = function(_itemId, _callback){
+  var full_url = this.graphing_url + _itemId + ".json";
     return $.ajax({
       url: full_url,
       type: 'GET',
@@ -95,62 +139,128 @@ query.categoryPrice = function(_categoryId, _search, _callback){
       },
       success: function(data){
         var response = JSON.parse(data);
-        items = response.items;
-        console.log(items);
-        for (var i = 0; i < items.length; i++) {
-          var item = items[i];
-          var url = item.icon;
-          query.getImg(url, function(blob, request_url){
-            console.log(blob);
-            item.icon = blob;
-            _callback(item);
-          });
-        };
-      }
-    });
-}
-query.itemGraph = function(_itemId){
-  var full_url = this.graphing_url + _itemId + ".json";
-    return $.ajax({
-      url: full_url,
-      type: 'GET',
-      statusCode:{
-        401 : function(){
-          console.log('Auth Error');
-        },
-        404 : function(){
-          console.log('Page not found');
-        },
-        500 : function(){
-          console.log('Server error');
-        }
+        iManager.getItem(_itemId, function(item){
+          item.graph = response;
+          _callback(item);
+        });
+      },
+      complete: function(){
       }
     });
 }
 
-extension.Designer = {};
+extension.Toolz.parsePrice = function(payload){
+  var pattern = new RegExp(/\d*\.?,?\d*[kmb]?/);
+  var price = new String(pattern.exec(payload));
+  var actual = null;
+  
+  if(price.match(",")){
+    pattern = new RegExp(/\d*\,?\d*/);
+    actual = new String(pattern.exec(price));
+    var array = actual.split(",");
+    var thousands = array[0];
+    thousands = thousands*1000;
+    var hundreds = array[1]*1;
+    actual = thousands + hundreds;
+  }
+  else if(price.match("k")){
+    pattern = new RegExp(/\d*\.?\d*/);
+    actual = pattern.exec(price);
+    actual = actual*1000;
+  }
+  else if(price.match("m")){
+    pattern = new RegExp(/\d*\.?\d*/);
+    actual = pattern.exec(price);
+    actual = actual*1000000;
+  }
+  else if(price.match("b")){
+    pattern = new RegExp(/\d*\.?\d*/);
+    actual = pattern.exec(price);
+    actual = actual * 1000000000;
+  }else{
+    actual = price * 1;
+  }
+  return actual;
+}
+extension.Toolz.parseDate = function(item){
+
+}
 
 extension.Designer.addToTable = function(data){
-  extension.Designer.table.append("<tr><td><img src='"+ data.icon + "'/></td><td>" + data.name + "</td><td>" + data.description + "</td><td>" + data.today.price + "</td><td></td></tr>");
+  extension.Designer.table.append("<tr id='"+data.id+"'><td><img src='"+ data.icon + "'/></td><td>" + data.name + "</td><td>" + data.description + "</td><td>" + data.today.price + "</td></tr>");
+  $("tr[id='"+data.id+"']").on('click', function(){
+    id = $(this).attr('id');
+    iManager.getItem(id, function(item){
+      if(item){
+        designer.showItemDetails(item);
+      }
+      else
+        query.item(item.id, function(queried){
+          designer.showItemDetails(queried);
+        });
+    });
+  });
 }
-
 extension.Designer.addMultiple = function(items){
   if(items)
     for (var i = 0; i < items.length; i++) {
       extension.Designer.addToTable(items[i]);
     };
 }
+extension.Designer.showItemDetails = function(item){
+  // <!--<tr><td>30 Day Change</td><td>"+item.day30.change+"</td></tr><tr><td>90 Day Change</td><td>"+item.day90.change+"</td></tr><tr><td>180 Day Change</td><td>"+item.day180.change+"</td></tr>-->
+  $('#item-head').html("<div class='item-header'><h1>"+item.name+"</h1><img src='"+item.icon_large+"' /><table><caption><h2>Price info</h2></caption><tbody><tr><td>Current</td><td>"+item.current.formated_price+"</td></tr><tr><td>Today's Change</td><td>"+item.today.price+"</td></tr></tbody></table></div>");
+  $.plot($('#item-graph'), [ [[moment().subtract('days', 1), 0], [moment(), parseInt(item.current.price)]] ], { yaxis: { max: parseInt(item.current.price) } });
+  $('#search-content').hide();
+  $('#item').show();
+}
+
+extension.ItemManager.addItem = function(item){
+  chrome.storage.local.set(item);
+}
+
+extension.ItemManager.getItem = function(item, cllbk){
+  if(typeof item === "integer")
+    search = item;
+  else if(typeof item === "object")
+    search = item.id
+  chrome.storage.local.get(search, function(rtrn){
+    cllbk(rtrn);
+  });
+}
+
+extension.ItemManager.getAll = function(cllbk){
+  chrome.storage.local.get(null, function(items){
+    cllbk(items);
+  });
+}
 
 $(document).ready(function(){
   extension.Designer.table = $('#content-table');
   var search = $('#search');
-  search.bind('input', function(){
+  var typeTimer;
+  var doneInterval = 750;
+
+  doneTyping = function(){
+    extension.Designer.table.html('');
     if(search.val() != (null || "")){
       cat = $('#category')
-      query.categoryPrice(cat.val(), search.val(), extension.Designer.addToTable);
+      query.categoryPrice(cat.val(), search.val());
     }
-    else
-      extension.Designer.table.html('');
+  }
+  search.keyup(function(){
+    clearTimeout(typeTimer);
+    typeTimer = setTimeout(doneTyping, doneInterval);
   });
+
+  $('#search-icon').on('click',function(){
+    $('#item').hide();
+    $('#search-content').show();
+  });
+  $('#details-icon').on('click',function(){
+    $('#item').show();
+    $('#search-content').hide();
+  });
+
 });
 

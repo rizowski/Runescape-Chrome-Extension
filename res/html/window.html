@@ -3,76 +3,92 @@
   <head>
     <link rel="stylesheet" type="text/css" href="style.css">
     <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="jquery-ui.js"></script>
+    <script type="text/javascript" src="jquery.flot.js"></script>
+    <script type="text/javascript" src="moment.min.js"></script>
     <script type="text/javascript" src="contentscript.js"></script>
   </head>
   <body>
     <div class="container">
       <figure class="img-container">
         <div class="top">
+          <!-- <img src=""> -->
           <h1>Runescape Toolz!</h1>
+          <!-- <img src="arrow-25.png"> -->
         </div>
       </figure>
-      <div class="main">
-      <center>
-        <select id="category"> 
-          <option value="0">Miscellaneous</option>
-          <option value="1">Ammo</option>
-          <option value="2">Arrows</option>
-          <option value="3">Bolts</option>
-          <option value="4">Construction materials</option>
-          <option value="5">Construction projects</option>
-          <option value="6">Cooking Ingredients</option>
-          <option value="7">Costumes</option>
-          <option value="8">Crafting materials</option>
-          <option value="9">Familiars</option>
-          <option value="10">Farming produce</option>
-          <option value="11">Fletching materials</option>
-          <option value="12">Food and drink</option>
-          <option value="13">Herblore materials</option>
-          <option value="14">Hunting equipment</option>
-          <option value="15">Hunting produce</option>
-          <option value="16">Jewellery</option>
-          <option value="17">Mage Armour</option>
-          <option value="18">Mage Weapons</option>
-          <option value="19">Melee Armour - low level</option>
-          <option value="20">Melee Armour - mid level</option>
-          <option value="21">Melee Armour - high level</option>
-          <option value="22">Melee Weapons - low level</option>
-          <option value="23">Melee Weapons - mid level</option>
-          <option value="24">Melee Weapons - high level</option>
-          <option value="25">Mining and Smithing</option>
-          <option value="26">Potions</option>
-          <option value="27">Prayer Armour</option>
-          <option value="28">Prayer Materials</option>
-          <option value="29">Range Armour</option>
-          <option value="30">Range Weapons</option>
-          <option value="31">Runecrafting</option>
-          <option value="32">Rune, Spells and Teleports</option>
-          <option value="33">Seeds</option>
-          <option value="34">Summoning scrolls</option>
-          <option value="35">Tools and containers</option>
-          <option value="36">Woodcutting product</option>
-          <option value="37">Pocket Items</option>
-        </select>
-        <input id="" type="radio" name="search-type" value="Items" checked="true"/> Search Items
-        <!-- <input id="" type="radio" name="search-type" value="Categories"/> Search Categories
-        <input id="" type="radio" name="search-type" value="High Scores"/> Search High Scores -->
-      </center>
-      <input id="search" class="search" type="text" placeholder="CannonBall"/>
-      <div class="content">
-        <table class="content-table">
-          <thead>
-            <th></th>
-            <th>Name</th>
-            <th>Desc.</th>
-            <th>Price</th>
-            <th></th> <!-- Options -->
-          </thead>
-          <tbody id="content-table">
-            
-          </tbody>
-        </table>
+      <div class="menu">
+        <ul>
+          <li><a href="#"><img id='search-icon' src="search-3-24.png"></a></li>
+          <li><a href="#"><img id='details-icon' src="view-details-24.png"></a></li>
+        </ul>
       </div>
+      <div id='main' class="main">
+        <div id="search-content" class="search-content">
+          <select id='category'>
+            <option value='0'>Miscellaneous</option>
+            <option value='1'>Ammo</option>
+            <option value='2'>Arrows</option>
+            <option value='3'>Bolts</option>
+            <option value='4'>Construction materials</option>
+            <option value='5'>Construction projects</option>
+            <option value='6'>Cooking Ingredients</option>
+            <option value='7'>Costumes</option>
+            <option value='8'>Crafting materials</option>
+            <option value='9'>Familiars</option>
+            <option value='10'>Farming produce</option>
+            <option value='11'>Fletching materials</option>
+            <option value='12'>Food and drink</option>
+            <option value='13'>Herblore materials</option>
+            <option value='14'>Hunting equipment</option>
+            <option value='15'>Hunting produce</option>
+            <option value='16'>Jewellery</option>
+            <option value='17'>Mage Armour</option>
+            <option value='18'>Mage Weapons</option>
+            <option value='19'>Melee Armour - low level</option>
+            <option value='20'>Melee Armour - mid level</option>
+            <option value='21'>Melee Armour - high level</option>
+            <option value='22'>Melee Weapons - low level</option>
+            <option value='23'>Melee Weapons - mid level</option>
+            <option value='24'>Melee Weapons - high level</option>
+            <option value='25'>Mining and Smithing</option>
+            <option value='26'>Potions</option>
+            <option value='27'>Prayer Armour</option>
+            <option value='28'>Prayer Materials</option>
+            <option value='29'>Range Armour</option>
+            <option value='30'>Range Weapons</option>
+            <option value='31'>Runecrafting</option>
+            <option value='32'>Rune, Spells and Teleports</option>
+            <option value='33'>Seeds</option>
+            <option value='34'>Summoning scrolls</option>
+            <option value='35'>Tools and containers</option>
+            <option value='36'>Woodcutting product</option>
+            <option value='37'>Pocket Items</option>
+          </select>
+          <input id='search' class='search' type='text' placeholder='CannonBall'/>
+          <table class='content-table'>
+            <thead>
+              <th></th>
+              <th>Name</th>
+              <th>Desc.</th>
+              <th>Price Change</th>
+              <!--<th></th>  Options -->
+            </thead>
+            <tbody id='content-table'>
+            </tbody>
+          </table>
+          <img id='table-loading'  style="display: none;" src="loading.gif" class="loading">
+        </div>
+        <div>
+          <div id='item' class="item" style="display: none;">
+            <div id="item-head">
+              <span>Nothing here to display at the moment. :D</span>
+            </div>
+            <div id='item-graph'  class="item-graph">
+          
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <footer></footer>
