@@ -2,7 +2,7 @@ chrome.app.runtime.onLaunched.addListener(function(){
   chrome.app.window.create('window.html', {
     'bounds':{
       'width': 400,
-      'height': 550 // 550
+      'height': 600 // 550
     },
     minWidth: 400,
     minHeight: 550,

@@ -32,7 +32,7 @@ h1{
 
 td{
 	padding: 5px;
-	border-bottom: 1px solid #e1bb34;
+	border-bottom: 1px solid black;
 	text-align: center;
 }
 
@@ -40,7 +40,7 @@ table{
 	border-collapse: collapse;
 }
 select{
-	width: 378px;
+	width: 100%;
 	height: 30px;
 }
 	
@@ -94,8 +94,8 @@ select{
 .main{
 	overflow: hidden;
 	overflow-y: scroll;
-	height: 435px;
-	padding: 10px;
+	height: 456px;
+	padding: 10px 10px 0px 10px;
 }
 
 .center{
@@ -104,7 +104,7 @@ select{
 }
 
 .search{
-	width: 368px;
+	width: 100%;
 	height: 30px;
 	display: block;
 	background: #636b6e;
@@ -125,9 +125,9 @@ select{
 	padding-bottom: 10px;
 }*/
 
-.content-table{
+/*.content-table{
 	width: 100%;
-	/*height: 100%;*/
+	/*height: 100%;
 }
 
 .content-table>tbody>tr{
@@ -138,7 +138,7 @@ select{
 }
 
 .item{
-	/*background: url('paper.png');*/
+	/*background: url('paper.png');
 	background: #636b6e;
 	padding: 5px;
 	height: 425px;
@@ -163,6 +163,46 @@ select{
 	background: #3b4449;
 	margin-left: 130px;
 	padding: 5px;
+}*/
+
+.graph{
+	width:100%;
+	height: 300px;
+}
+
+.search-item{
+	width: 100%;
+	padding: 5px;
+	margin-bottom: 2px;
+	background: #636b6e;
+	border-bottom: 1px solid #e1bb34;
+}
+
+.search-item:hover{
+	cursor: pointer;
+	background: #606060;
+}
+
+.search-item>h3{
+	width: 84%;
+	text-align: center;
+	display: inline-block;
+}
+
+.search-item>img{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.item-prices{
+	color: black;
+	background: gray;
+	width: 100%;
+}
+
+.search-item-content{
+	width: 100%;
+	cursor: default;
 }
 
 .loading{

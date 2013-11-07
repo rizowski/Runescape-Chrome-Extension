@@ -4,8 +4,10 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="jquery-ui.js"></script>
-    <script type="text/javascript" src="jquery.flot.js"></script>
     <script type="text/javascript" src="moment.min.js"></script>
+    <script type="text/javascript" src="jquery.flot.min.js"></script>
+    <script type="text/javascript" src="jquery.flot.time.js"></script>
+    <!--<script type="text/javascript" src="chart.min.js"></script>-->
     <script type="text/javascript" src="contentscript.js"></script>
   </head>
   <body>
@@ -17,15 +19,12 @@
           <!-- <img src="arrow-25.png"> -->
         </div>
       </figure>
-      <div class="menu">
+      <div class="menu" style="display: none;">
         <ul>
           <li><a href="#"><img id='search-icon' src="search-3-24.png"></a></li>
-          <li><a href="#"><img id='details-icon' src="view-details-24.png"></a></li>
         </ul>
       </div>
-      <div id='main' class="main">
-        <div id="search-content" class="search-content">
-          <select id='category'>
+      <select id='category'>
             <option value='0'>Miscellaneous</option>
             <option value='1'>Ammo</option>
             <option value='2'>Arrows</option>
@@ -64,31 +63,12 @@
             <option value='35'>Tools and containers</option>
             <option value='36'>Woodcutting product</option>
             <option value='37'>Pocket Items</option>
-          </select>
-          <input id='search' class='search' type='text' placeholder='CannonBall'/>
-          <table class='content-table'>
-            <thead>
-              <th></th>
-              <th>Name</th>
-              <th>Desc.</th>
-              <th>Price Change</th>
-              <!--<th></th>  Options -->
-            </thead>
-            <tbody id='content-table'>
-            </tbody>
-          </table>
-          <img id='table-loading'  style="display: none;" src="loading.gif" class="loading">
+      </select>
+      <input id='search' class='search' type='text' placeholder='CannonBall'/>
+      <div id='main' class="main">
+        <div id="search-content" class="search-content">
         </div>
-        <div>
-          <div id='item' class="item" style="display: none;">
-            <div id="item-head">
-              <span>Nothing here to display at the moment. :D</span>
-            </div>
-            <div id='item-graph'  class="item-graph">
-          
-            </div>
-          </div>
-        </div>
+        <img id='search-loading'  style="display: none;" src="loading.gif" class="loading">
       </div>
     </div>
     <footer></footer>

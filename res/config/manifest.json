@@ -1,8 +1,11 @@
 {
     "name": "Runescape Toolz",
-	"description": "Just a simple Runescape tool that allows for easy access to on-site search.",
+	"description": "Just a simple Runescape tool that allows for Runescape items.",
     "version": "0.0.1",
 	"manifest_version": 2,
+    "sandbox" : {
+            "Pages": ["sandbox.html"]
+        },
     "app" : {
         "background":{
             "scripts": ["background.js"]
@@ -13,6 +16,5 @@
         "http://services.runescape.com/m=itemdb_rs/4255_obj_sprite.gif?id=*",
         "storage"
     ],
-    "icons" : {
-        }
+    "icons" : {}
 }
