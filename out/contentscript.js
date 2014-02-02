@@ -1,5 +1,0 @@
-
-
-/*
-//@ sourceMappingURL=contentscript.js.map
-*/

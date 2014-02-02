@@ -1,5 +1,0 @@
-
-
-/*
-//@ sourceMappingURL=options.js.map
-*/

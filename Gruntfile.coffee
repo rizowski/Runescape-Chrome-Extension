@@ -10,34 +10,35 @@ module.exports = (grunt) ->
 			}
 		}
 
-		coffee: {
-			options: {
-				sourceMap: true
-				bare:  true
-			}
-			compile: {
-				files: {
-					'out/contentscript.js': 'res/coffee/contentscript.coffee'
-					'out/options.js': 'res/coffee/options.coffee'
-				}
-			}
-		}
+		# coffee: {
+		# 	options: {
+		# 		sourceMap: true
+		# 		bare:  true
+		# 	}
+		# 	compile: {
+		# 		files: {
+		# 			'out/contentscript.js': 'res/coffee/contentscript.coffee'
+		# 			'out/options.js': 'res/coffee/options.coffee'
+		# 		}
+		# 	}
+		# }
 
-		sass: {
-			dist: {
-				files: {
-					'out/style.css' : 'res/style/style.sass'
-				}
-			}
-		}
+		# sass: {
+		# 	dist: {
+		# 		files: {
+		# 			'out/style.css' : 'res/style/style.sass'
+		# 		}
+		# 	}
+		# }
 
 		copy: {
 			main: {
 				files: [
 					{expand: true, flatten: true, src:['res/html/*'], dest: 'out/', filter: 'isFile'}
-					{expand: true, flatten: true, src:['res/config/*'], dest: 'out/', filter: 'isFile'}
+					{expand: true, flatten: true, src:['res/*'], dest: 'out/', filter: 'isFile'}
 					{expand: true, flatten: true, src:['lib/*'], dest: 'out/', filter: 'isFile'}
-					{expand: true, flatten: true, src:['js/*'],  dest: 'out/', filter: 'isFile'}
+					{expand: true, flatten: true, src:['res/javascript/*'],  dest: 'out/', filter: 'isFile'}
+					{expand: true, flatten: true, src:['res/style/*'],  dest: 'out/', filter: 'isFile'}
 				]
 			}
 		}
@@ -55,4 +56,4 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-copy'
 	grunt.loadNpmTasks 'grunt-contrib-clean'
 	grunt.loadNpmTasks 'grunt-contrib-sass'
-	grunt.registerTask 'default', ['clean', 'uglify', 'coffee', 'sass', 'copy']
+	grunt.registerTask 'default', ['clean', 'uglify',  'copy']
